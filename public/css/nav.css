@@ -2,12 +2,25 @@
     transition: all 0.3s ease-in-out; /* Smooth transition effect */
     border-radius: 5px; /* Rounded corners */
     padding: 8px 12px; /* Add some padding */
+    transform-style: preserve-3d; /* Enables 3D transformation effects */
 }
 
 .custom-nav-link:hover,
 .custom-nav-link.active {
-   /* background-color: var(--bs-primary);  Bootstrap primary color */
-    background-color: rgb(214, 199, 113);  /*Bootstrap primary color */
-    color: white !important; /* Change text color */
-    transform: translateY(-3px); /* Slight upward movement */
+     background-color: var(--bs-primary); /* Bootstrap primary color */
+     color: White !important; /* Change text color */
+    /* background-color: rgb(244, 245, 242);  Bootstrap primary color */
+    /* color: rgb(17, 15, 15) !important; Change text color */
+    transform: translateY(-3px) translateZ(5px); /* Slight upward movement and pop out*/
 }
+
+.custom-card-link {
+    transition: all 0.3s ease-in-out; 
+    transform-style: preserve-3d;
+}
+
+.custom-card-link:hover,
+.custom-card-link.active {
+    transform: translateY(-3px) translateZ(5px);
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8), -4px -4px 7px rgba(255, 0, 0, 0.5);
+} 

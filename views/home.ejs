@@ -4,13 +4,13 @@
     <%- include("./partials/head.ejs") %>
     <title>Homepage</title> 
 </head>
-<body style="background-color: rgb(58, 50, 50);">
+<body style="background-color:transparent;">
     <%- include("./partials/nav.ejs") %> 
-    <div class="container mt-3" style="background-color: rgb(58, 50, 50);">
+    <div class="container mt-3" style="background-color: hidden;">
         <div class="row g-3 ">
             <% blogs.forEach(blog => { %>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100 border border-info rounded custom-card-link">
                         <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title"><%= blog.title %></h5>
