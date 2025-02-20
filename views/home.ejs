@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/head.ejs") %>
+    <title>Homepage</title> 
+</head>
+<body style="background-color: rgb(58, 50, 50);">
+    <%- include("./partials/nav.ejs") %> 
+    <div class="container mt-3" style="background-color: rgb(58, 50, 50);">
+        <div class="row g-3 ">
+            <% blogs.forEach(blog => { %>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="card h-100">
+                        <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= blog.title %></h5>
+                            <a href="/blog/<%=blog._id%>" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <%- include("./partials/scripts.ejs") %>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<%# image not rendered because express js doesn't treat static assets as it operates with non static things. || because express thinks path of image as the route like/blog/new-add so we specific it serve it as static %>

@@ -1,0 +1,13 @@
+.custom-nav-link {
+    transition: all 0.3s ease-in-out; /* Smooth transition effect */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px 12px; /* Add some padding */
+}
+
+.custom-nav-link:hover,
+.custom-nav-link.active {
+   /* background-color: var(--bs-primary);  Bootstrap primary color */
+    background-color: rgb(214, 199, 113);  /*Bootstrap primary color */
+    color: white !important; /* Change text color */
+    transform: translateY(-3px); /* Slight upward movement */
+}
