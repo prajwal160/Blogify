@@ -200,7 +200,8 @@ a {
 .blog-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1rem;
+    column-gap: 1rem;
+    row-gap: 1.75rem;
 }
 
 .blog-grid-item {
@@ -480,6 +481,14 @@ a {
     aspect-ratio: 16 / 10;
     object-fit: cover;
     border-radius: 8px;
+}
+
+[data-theme="dark"] .related-item strong {
+    color: #e9f0f8;
+}
+
+[data-theme="dark"] .related-item .text-muted {
+    color: #aeb9c7 !important;
 }
 
 .create-shell {
