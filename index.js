@@ -16,10 +16,36 @@ const { checkForAuthenticationCookie } = require("./middlewares/authentication")
 const app = express();
 const PORT = process.env.PORT || 8000;
 const PAGE_SIZE = 6;
+let dbConnectionPromise = null;
+
+// In hosted environments (Vercel, proxies), trust forwarded client IP headers.
+app.set("trust proxy", 1);
 
 async function connectDatabase() {
-    await mongoose.connect(process.env.MONGO_URL);
-    console.log("MongoDb Connected");
+    if (mongoose.connection.readyState === 1) {
+        return mongoose.connection;
+    }
+
+    if (dbConnectionPromise) {
+        return dbConnectionPromise;
+    }
+
+    dbConnectionPromise = mongoose
+        .connect(process.env.MONGO_URL, {
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 5000,
+            bufferCommands: false,
+        })
+        .then((conn) => {
+            console.log("MongoDb Connected");
+            return conn;
+        })
+        .catch((err) => {
+            dbConnectionPromise = null;
+            throw err;
+        });
+
+    return dbConnectionPromise;
 }
 
 app.set("view engine", "ejs");
@@ -33,6 +59,11 @@ if (process.env.NODE_ENV !== "test") {
         max: 300,
         standardHeaders: true,
         legacyHeaders: false,
+        keyGenerator: (req) => req.ip || req.socket?.remoteAddress || "anonymous",
+        validate: {
+            forwardedHeader: false,
+            xForwardedForHeader: false,
+        },
     }));
 }
 
@@ -40,6 +71,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
 app.use(express.static(path.resolve("./public")));
+app.use(async (req, res, next) => {
+    if (process.env.NODE_ENV === "test") {
+        return next();
+    }
+
+    try {
+        await connectDatabase();
+        return next();
+    } catch (error) {
+        return next(error);
+    }
+});
 
 app.get("/", async (req, res, next) => {
     try {
