@@ -172,6 +172,16 @@ a {
     border-bottom: 1px solid var(--line);
 }
 
+.blog-card-cover-wrap {
+    position: relative;
+}
+
+.card-cover-menu {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+}
+
 .blog-card-body {
     padding: 1rem;
 }
@@ -184,6 +194,22 @@ a {
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: 0.7rem;
+}
+
+.card-menu-btn {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    line-height: 1;
+    padding: 0.25rem 0.62rem;
+    color: var(--muted);
+    background: #fff;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.card-menu-btn:hover {
+    background: #f0f4f8;
+    color: var(--ink);
 }
 
 .blog-meta {
@@ -402,4 +428,17 @@ a {
 .create-body {
     min-height: 280px;
     resize: vertical;
+}
+
+.app-footer {
+    border-top: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.72);
+    margin-top: 2rem;
+}
+
+.footer-inner {
+    padding: 0.85rem 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    text-align: center;
 }

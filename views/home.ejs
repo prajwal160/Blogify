@@ -53,18 +53,49 @@
         <% if (blogs && blogs.length > 0) { %>
             <section class="blog-grid">
                 <% blogs.forEach((blog) => { %>
-                    <article class="blog-grid-item">
+                    <% const canEdit = !!locals.user; %>
+                    <% const canDelete = locals.user && blog.createdBy && String(locals.user._id) === String(blog.createdBy._id); %>
+                    <% const returnTo = '/?q=' + encodeURIComponent(filters?.q || '') + '&tag=' + encodeURIComponent(filters?.tag || '') + '&sort=' + encodeURIComponent(filters?.sort || 'latest') + '&page=' + encodeURIComponent(filters?.page || 1) + '#blog-' + blog._id; %>
+                    <article class="blog-grid-item" id="blog-<%= blog._id %>">
                         <div class="surface-card blog-card">
-                            <img
-                                class="blog-card-cover"
-                                src="<%= blog.coverImageURL ? blog.coverImageURL : '/images/default.png' %>"
-                                alt="<%= blog.title %>"
-                            >
+                            <div class="blog-card-cover-wrap">
+                                <img
+                                    class="blog-card-cover"
+                                    src="<%= blog.coverImageURL ? blog.coverImageURL : '/uploads/1739908497311-garg4.png' %>"
+                                    alt="<%= blog.title %>"
+                                >
+                                <% if (canEdit) { %>
+                                    <div class="dropdown card-cover-menu">
+                                        <button
+                                            class="btn btn-sm card-menu-btn"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            aria-label="Post actions"
+                                        >
+                                            &#8942;
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="/blog/<%= blog.slug || blog._id %>/edit?returnTo=<%= encodeURIComponent(returnTo) %>">Edit Post</a>
+                                            </li>
+                                            <% if (canDelete) { %>
+                                                <li>
+                                                    <form action="/blog/<%= blog.slug || blog._id %>/delete" method="post" onsubmit="return confirm('Delete this blog permanently?')">
+                                                        <button class="dropdown-item text-danger" type="submit">Delete Post</button>
+                                                    </form>
+                                                </li>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+                            </div>
+
                             <div class="blog-card-body">
                                 <h2 class="blog-card-title"><%= blog.title %></h2>
                                 <p class="blog-meta">
-                                    <%= blog.createdBy?.fullName || 'Unknown Author' %> •
-                                    <%= new Date(blog.createdAt).toLocaleDateString() %> •
+                                    <%= blog.createdBy?.fullName || 'Unknown Author' %> |
+                                    <%= new Date(blog.createdAt).toLocaleDateString() %> |
                                     <%= blog.views || 0 %> views
                                 </p>
                                 <% if (blog.excerpt) { %>
@@ -98,6 +129,7 @@
             </section>
         <% } %>
     </main>
+    <%- include("./partials/footer.ejs") %>
 
     <%- include("./partials/scripts.ejs") %>
 </body>

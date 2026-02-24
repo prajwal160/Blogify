@@ -33,6 +33,7 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
+const DEFAULT_BLOG_COVER_URL = "/uploads/1739908497311-garg4.png";
 
 const BLOG_STATUSES = new Set(["draft", "published"]);
 
@@ -85,6 +86,18 @@ function isOwner(user, blog) {
     return !!user && !!blog && String(user._id) === String(blog.createdBy?._id || blog.createdBy);
 }
 
+function sanitizeReturnTo(value, fallback = "/") {
+    if (!value || typeof value !== "string") {
+        return fallback;
+    }
+
+    if (value.startsWith("/") && !value.startsWith("//")) {
+        return value;
+    }
+
+    return fallback;
+}
+
 router.get("/add-new", requireAuth, (req, res) => {
     return res.render("addBlog", {
         user: req.user,
@@ -104,9 +117,11 @@ router.get("/add-new", requireAuth, (req, res) => {
 router.get("/:identifier/edit", requireAuth, async (req, res) => {
     const blog = await findBlogByIdentifier(req.params.identifier);
 
-    if (!blog || !isOwner(req.user, blog)) {
-        return res.status(403).send("You are not allowed to edit this post.");
+    if (!blog) {
+        return res.status(404).send("Blog not found");
     }
+
+    const returnTo = sanitizeReturnTo(req.query.returnTo, `/blog/${blog.slug || blog._id}`);
 
     return res.render("editBlog", {
         user: req.user,
@@ -121,14 +136,15 @@ router.get("/:identifier/edit", requireAuth, async (req, res) => {
         pageTitle: `Edit ${blog.title} | Blogify`,
         metaDescription: `Edit your blog post: ${blog.title}`,
         ogTitle: `Edit ${blog.title}`,
+        returnTo,
     });
 });
 
 router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async (req, res) => {
     const blog = await findBlogByIdentifier(req.params.identifier);
 
-    if (!blog || !isOwner(req.user, blog)) {
-        return res.status(403).send("You are not allowed to edit this post.");
+    if (!blog) {
+        return res.status(404).send("Blog not found");
     }
 
     const title = req.body?.title?.trim() || "";
@@ -136,6 +152,7 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
     const tagsInput = req.body?.tags?.trim() || "";
     const status = req.body?.status?.trim() || "published";
     const body = req.body?.body?.trim() || "";
+    const returnTo = sanitizeReturnTo(req.body?.returnTo, `/blog/${blog.slug || blog._id}`);
 
     if (!title || !body) {
         return res.status(400).render("editBlog", {
@@ -152,6 +169,7 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
             pageTitle: `Edit ${blog.title} | Blogify`,
             metaDescription: `Edit your blog post: ${blog.title}`,
             ogTitle: `Edit ${blog.title}`,
+            returnTo,
         });
     }
 
@@ -170,6 +188,7 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
             pageTitle: `Edit ${blog.title} | Blogify`,
             metaDescription: `Edit your blog post: ${blog.title}`,
             ogTitle: `Edit ${blog.title}`,
+            returnTo,
         });
     }
 
@@ -195,7 +214,7 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
 
     await Blog.updateOne({ _id: blog._id }, { $set: updatedFields });
 
-    return res.redirect(`/blog/${slug}`);
+    return res.redirect(returnTo);
 });
 
 router.post("/:identifier/delete", requireAuth, async (req, res) => {
@@ -319,7 +338,7 @@ router.get("/:identifier", async (req, res) => {
         pageTitle: `${blog.title} | Blogify`,
         metaDescription: blog.excerpt || blog.title,
         ogTitle: blog.title,
-        ogImage: blog.coverImageURL || "/images/default.png",
+        ogImage: blog.coverImageURL || DEFAULT_BLOG_COVER_URL,
     });
 });
 
@@ -342,7 +361,7 @@ router.post("/comment/:blogId", requireAuth, async (req, res) => {
             pageTitle: `${blog.title} | Blogify`,
             metaDescription: blog.excerpt || blog.title,
             ogTitle: blog.title,
-            ogImage: blog.coverImageURL || "/images/default.png",
+            ogImage: blog.coverImageURL || DEFAULT_BLOG_COVER_URL,
         });
     }
 
@@ -400,7 +419,7 @@ router.post("/", requireAuth, upload.single("coverImage"), async (req, res) => {
 
         const coverImageURL = req.file?.path?.startsWith("http")
             ? req.file.path
-            : (req.file?.filename ? `/uploads/${req.file.filename}` : "/images/default.png");
+            : (req.file?.filename ? `/uploads/${req.file.filename}` : DEFAULT_BLOG_COVER_URL);
 
         const slug = await generateUniqueSlug(title);
         const excerpt = excerptInput || `${body.slice(0, 160)}${body.length > 160 ? "..." : ""}`;

@@ -13,6 +13,8 @@
             <p class="create-subtitle">Update your post and save changes.</p>
 
             <form action="/blog/<%= blog.slug || blog._id %>/edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="returnTo" value="<%= returnTo || ('/blog/' + (blog.slug || blog._id)) %>">
+
                 <div class="mb-3">
                     <label for="coverImage" class="form-label">Replace Cover Image</label>
                     <input
@@ -81,11 +83,12 @@
 
                 <div class="d-flex gap-2 flex-wrap">
                     <button class="btn btn-primary pill-btn" type="submit">Update Blog</button>
-                    <a class="btn btn-outline-secondary pill-btn" href="/blog/<%= blog.slug || blog._id %>">Cancel</a>
+                    <a class="btn btn-outline-secondary pill-btn" href="<%= returnTo || ('/blog/' + (blog.slug || blog._id)) %>">Cancel</a>
                 </div>
             </form>
         </section>
     </main>
+    <%- include("./partials/footer.ejs") %>
 
     <%- include("./partials/scripts.ejs") %>
 </body>
