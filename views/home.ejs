@@ -2,35 +2,59 @@
 <html lang="en">
 <head>
     <%- include("./partials/head.ejs") %>
-    <title>Homepage</title> 
+    <title>Blogify</title>
 </head>
-<body style="background-color:transparent;">
-    <%- include("./partials/nav.ejs") %> 
-    <div class="container mt-3" style="background-color: hidden;">
-        <div class="row g-3 ">
-            <% blogs.forEach(blog => { %>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                    <div class="card h-100 border border-info rounded custom-card-link">
-                        <img src="<%= blog.coverImageURL.startsWith("/") ? blog.coverImageURL : blog.coverImageURL %>" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= blog.title %></h5>
-                            <a href="/blog/<%=blog._id%>" class="btn btn-primary">View</a>
+<body>
+    <%- include("./partials/nav.ejs") %>
+
+    <main class="page-wrap home-shell">
+        <section class="surface-card home-hero">
+            <h1 class="hero-title">Read sharp stories from curious builders.</h1>
+            <p class="hero-subtitle">
+                Fresh ideas on coding, design, and growth from the Blogify community.
+            </p>
+            <div class="hero-tools">
+                <input class="hero-search" type="text" placeholder="Search posts (coming soon)" disabled>
+                <span class="hero-chip">Latest</span>
+                <span class="hero-chip">Technology</span>
+                <span class="hero-chip">Career</span>
+            </div>
+        </section>
+
+        <% if (blogs && blogs.length > 0) { %>
+            <section class="blog-grid">
+                <% blogs.forEach((blog) => { %>
+                    <article class="blog-grid-item">
+                        <div class="surface-card blog-card">
+                            <img
+                                class="blog-card-cover"
+                                src="<%= blog.coverImageURL ? blog.coverImageURL : '/images/default.png' %>"
+                                alt="<%= blog.title %>"
+                            >
+                            <div class="blog-card-body">
+                                <h2 class="blog-card-title"><%= blog.title %></h2>
+                                <p class="blog-meta">
+                                    <%= new Date(blog.createdAt).toLocaleDateString() %> • 3 min read
+                                </p>
+                                <a href="/blog/<%= blog._id %>" class="btn btn-sm btn-primary pill-btn">Read Post</a>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            <% }) %>
-        </div>
-    </div>
+                    </article>
+                <% }) %>
+            </section>
+        <% } else { %>
+            <section class="surface-card empty-state">
+                <h2>No posts yet</h2>
+                <p>Start publishing to fill this feed with your latest writing.</p>
+                <% if (locals.user) { %>
+                    <a href="/blog/add-new" class="btn btn-primary pill-btn">Create First Blog</a>
+                <% } else { %>
+                    <a href="/user/signin" class="btn btn-primary pill-btn">Signin to Publish</a>
+                <% } %>
+            </section>
+        <% } %>
+    </main>
+
     <%- include("./partials/scripts.ejs") %>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-<%# image not rendered because express js doesn't treat static assets as it operates with non static things. || because express thinks path of image as the route like/blog/new-add so we specific it serve it as static %>
