@@ -437,8 +437,43 @@ a {
 }
 
 .footer-inner {
-    padding: 0.85rem 0;
+    padding: 1.35rem 0 1.15rem;
     color: var(--muted);
-    font-size: 0.92rem;
     text-align: center;
+}
+
+.footer-brand strong {
+    color: var(--ink);
+    font-family: "DM Serif Text", serif;
+    font-size: 1.08rem;
+    letter-spacing: 0.2px;
+}
+
+.footer-brand p {
+    margin-top: 0.3rem;
+    font-size: 0.94rem;
+}
+
+.footer-links {
+    margin-top: 0.7rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--brand);
+}
+
+.footer-copy {
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
 }
