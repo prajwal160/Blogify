@@ -71,6 +71,23 @@
                 </div>
             <% } %>
         </section>
+
+        <% if (relatedBlogs && relatedBlogs.length > 0) { %>
+            <section class="surface-card related-card">
+                <h3 class="mb-3">Related Posts</h3>
+                <div class="related-grid">
+                    <% relatedBlogs.forEach((item) => { %>
+                        <a class="related-item" href="/blog/<%= item.slug || item._id %>">
+                            <img src="<%= item.coverImageURL || '/images/default.png' %>" alt="<%= item.title %>">
+                            <div>
+                                <strong><%= item.title %></strong>
+                                <div class="text-muted small"><%= new Date(item.createdAt).toLocaleDateString() %></div>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            </section>
+        <% } %>
     </main>
 
     <%- include("./partials/scripts.ejs") %>

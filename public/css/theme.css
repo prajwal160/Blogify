@@ -112,6 +112,27 @@ a {
     font-weight: 700;
 }
 
+.hero-select {
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.58rem 0.9rem;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.hero-chip-active {
+    background: var(--brand-soft);
+    color: var(--brand);
+}
+
+.tag-strip {
+    display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
 .blog-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -171,6 +192,12 @@ a {
     margin-bottom: 0.85rem;
 }
 
+.blog-excerpt {
+    color: #2d353d;
+    margin-bottom: 0.85rem;
+    font-size: 0.95rem;
+}
+
 .empty-state {
     padding: 2.3rem;
     text-align: center;
@@ -183,6 +210,15 @@ a {
 .empty-state p {
     color: var(--muted);
     margin-bottom: 1rem;
+}
+
+.pagination-wrap {
+    margin-top: 1.05rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 @keyframes card-in {
@@ -306,6 +342,38 @@ a {
     margin: 0;
     color: #2a3138;
     white-space: pre-wrap;
+}
+
+.related-card {
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+}
+
+.related-grid {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.related-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.75rem;
+    padding: 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    text-decoration: none;
+}
+
+.related-item:hover {
+    background: #f8fbfe;
+}
+
+.related-item img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .create-shell {

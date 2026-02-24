@@ -11,14 +11,43 @@
         <section class="surface-card home-hero">
             <h1 class="hero-title">Read sharp stories from curious builders.</h1>
             <p class="hero-subtitle">
-                Fresh ideas on coding, design, and growth from the Blogify community.
+                Search, filter, and discover fresh ideas from the Blogify community.
             </p>
-            <div class="hero-tools">
-                <input class="hero-search" type="text" placeholder="Search posts (coming soon)" disabled>
-                <span class="hero-chip">Latest</span>
-                <span class="hero-chip">Technology</span>
-                <span class="hero-chip">Career</span>
-            </div>
+
+            <form class="hero-tools" method="get" action="/">
+                <input
+                    class="hero-search"
+                    type="text"
+                    name="q"
+                    value="<%= filters?.q || '' %>"
+                    placeholder="Search by title, excerpt, or tag"
+                >
+                <select class="hero-select" name="sort">
+                    <option value="latest" <%= (filters?.sort || 'latest') === 'latest' ? 'selected' : '' %>>Latest</option>
+                    <option value="oldest" <%= filters?.sort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+                    <option value="popular" <%= filters?.sort === 'popular' ? 'selected' : '' %>>Popular</option>
+                </select>
+                <% if (filters?.tag) { %>
+                    <input type="hidden" name="tag" value="<%= filters.tag %>">
+                <% } %>
+                <button class="btn btn-primary pill-btn" type="submit">Search</button>
+                <% if (filters?.q || filters?.tag || (filters?.sort && filters.sort !== 'latest')) { %>
+                    <a class="btn btn-outline-secondary pill-btn" href="/">Reset</a>
+                <% } %>
+            </form>
+
+            <% if (topTags && topTags.length) { %>
+                <div class="tag-strip">
+                    <% topTags.forEach((tagName) => { %>
+                        <a
+                            href="/?tag=<%= encodeURIComponent(tagName) %>&sort=<%= encodeURIComponent(filters?.sort || 'latest') %>"
+                            class="hero-chip <%= filters?.tag === tagName ? 'hero-chip-active' : '' %>"
+                        >
+                            #<%= tagName %>
+                        </a>
+                    <% }) %>
+                </div>
+            <% } %>
         </section>
 
         <% if (blogs && blogs.length > 0) { %>
@@ -34,23 +63,38 @@
                             <div class="blog-card-body">
                                 <h2 class="blog-card-title"><%= blog.title %></h2>
                                 <p class="blog-meta">
-                                    <%= new Date(blog.createdAt).toLocaleDateString() %> • 3 min read
+                                    <%= blog.createdBy?.fullName || 'Unknown Author' %> •
+                                    <%= new Date(blog.createdAt).toLocaleDateString() %> •
+                                    <%= blog.views || 0 %> views
                                 </p>
-                                <a href="/blog/<%= blog._id %>" class="btn btn-sm btn-primary pill-btn">Read Post</a>
+                                <% if (blog.excerpt) { %>
+                                    <p class="blog-excerpt"><%= blog.excerpt %></p>
+                                <% } %>
+                                <a href="/blog/<%= blog.slug || blog._id %>" class="btn btn-sm btn-primary pill-btn">Read Post</a>
                             </div>
                         </div>
                     </article>
                 <% }) %>
             </section>
+
+            <section class="pagination-wrap">
+                <div class="text-muted small">
+                    Showing page <%= pagination.currentPage %> of <%= pagination.totalPages %> (<%= pagination.totalBlogs %> posts)
+                </div>
+                <div class="d-flex gap-2">
+                    <% if (pagination.hasPrev) { %>
+                        <a class="btn btn-outline-secondary btn-sm pill-btn" href="/?q=<%= encodeURIComponent(filters?.q || '') %>&tag=<%= encodeURIComponent(filters?.tag || '') %>&sort=<%= encodeURIComponent(filters?.sort || 'latest') %>&page=<%= pagination.currentPage - 1 %>">Previous</a>
+                    <% } %>
+                    <% if (pagination.hasNext) { %>
+                        <a class="btn btn-outline-secondary btn-sm pill-btn" href="/?q=<%= encodeURIComponent(filters?.q || '') %>&tag=<%= encodeURIComponent(filters?.tag || '') %>&sort=<%= encodeURIComponent(filters?.sort || 'latest') %>&page=<%= pagination.currentPage + 1 %>">Next</a>
+                    <% } %>
+                </div>
+            </section>
         <% } else { %>
             <section class="surface-card empty-state">
-                <h2>No posts yet</h2>
-                <p>Start publishing to fill this feed with your latest writing.</p>
-                <% if (locals.user) { %>
-                    <a href="/blog/add-new" class="btn btn-primary pill-btn">Create First Blog</a>
-                <% } else { %>
-                    <a href="/user/signin" class="btn btn-primary pill-btn">Signin to Publish</a>
-                <% } %>
+                <h2>No matching posts</h2>
+                <p>Try another search term, tag, or sort option.</p>
+                <a href="/" class="btn btn-primary pill-btn">Clear Filters</a>
             </section>
         <% } %>
     </main>

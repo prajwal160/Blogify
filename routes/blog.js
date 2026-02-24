@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const mongoose = require("mongoose");
 const router = Router();
 
 const multer = require("multer");
@@ -65,6 +66,14 @@ async function generateUniqueSlug(title) {
     return slug;
 }
 
+async function findBlogByIdentifier(identifier) {
+    if (mongoose.isValidObjectId(identifier)) {
+        return Blog.findById(identifier).populate("createdBy");
+    }
+
+    return Blog.findOne({ slug: identifier }).populate("createdBy");
+}
+
 router.get("/add-new", requireAuth, (req, res) => {
     return res.render("addBlog", {
         user: req.user,
@@ -78,19 +87,49 @@ router.get("/add-new", requireAuth, (req, res) => {
     });
 });
 
-router.get("/:id", async (req, res) => {
-    const blog = await Blog.findById(req.params.id).populate("createdBy");
+router.get("/:identifier", async (req, res) => {
+    const blog = await findBlogByIdentifier(req.params.identifier);
 
     if (!blog) {
         return res.status(404).send("Blog not found");
     }
 
+    const isOwner = req.user && String(req.user._id) === String(blog.createdBy?._id);
+    if (blog.status === "draft" && !isOwner) {
+        return res.status(404).send("Blog not found");
+    }
+
+    await Blog.updateOne({ _id: blog._id }, { $inc: { views: 1 } });
+    blog.views = (blog.views || 0) + 1;
+
     const comments = await Comment.find({ blogId: blog._id }).populate("createdBy");
+
+    const relatedQuery = {
+        _id: { $ne: blog._id },
+        status: "published",
+    };
+
+    if (blog.tags?.length) {
+        relatedQuery.tags = { $in: blog.tags };
+    }
+
+    let relatedBlogs = await Blog.find(relatedQuery)
+        .sort({ createdAt: -1 })
+        .limit(3)
+        .select("title slug coverImageURL createdAt");
+
+    if (!relatedBlogs.length) {
+        relatedBlogs = await Blog.find({ _id: { $ne: blog._id }, status: "published" })
+            .sort({ createdAt: -1 })
+            .limit(3)
+            .select("title slug coverImageURL createdAt");
+    }
 
     return res.render("blog", {
         user: req.user,
         blog,
         comments,
+        relatedBlogs,
     });
 });
 
@@ -105,6 +144,7 @@ router.post("/comment/:blogId", requireAuth, async (req, res) => {
             user: req.user,
             blog,
             comments,
+            relatedBlogs: [],
             error: "Comment cannot be empty.",
         });
     }
@@ -173,7 +213,7 @@ router.post("/", requireAuth, upload.single("coverImage"), async (req, res) => {
             coverImageURL,
         });
 
-        return res.redirect(`/blog/${blog._id}`);
+        return res.redirect(`/blog/${blog.slug}`);
     } catch (error) {
         console.error("Error uploading image:", error);
         return res.status(500).send("Internal Server Error");
