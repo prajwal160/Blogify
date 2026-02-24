@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
         enum:["USER" , "ADMIN"],
         default:"USER",
     },
+    bookmarks: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "blog",
+        default: [],
+    },
 },
 {timestamps:true}
 );

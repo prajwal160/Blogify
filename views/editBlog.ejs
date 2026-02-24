@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("./partials/head.ejs") %>
+    <title>Edit Blog | Blogify</title>
+</head>
+<body>
+    <%- include("./partials/nav.ejs") %>
+
+    <main class="page-wrap create-shell">
+        <section class="surface-card create-card">
+            <h1 class="create-title">Edit Blog</h1>
+            <p class="create-subtitle">Update your post and save changes.</p>
+
+            <form action="/blog/<%= blog.slug || blog._id %>/edit" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="coverImage" class="form-label">Replace Cover Image</label>
+                    <input
+                        type="file"
+                        class="form-control"
+                        id="coverImage"
+                        name="coverImage"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        value="<%= formData?.title || '' %>"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="excerpt" class="form-label">Excerpt</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="excerpt"
+                        name="excerpt"
+                        maxlength="180"
+                        value="<%= formData?.excerpt || '' %>"
+                        placeholder="Short summary (optional)"
+                    >
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-7">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="tags"
+                            name="tags"
+                            value="<%= formData?.tags || '' %>"
+                            placeholder="nodejs, mongodb, career"
+                        >
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="published" <%= (formData?.status || 'published') === 'published' ? 'selected' : '' %>>Published</option>
+                            <option value="draft" <%= formData?.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3 mb-3">
+                    <label for="body" class="form-label">Body</label>
+                    <textarea
+                        class="form-control create-body"
+                        id="body"
+                        name="body"
+                        required
+                    ><%= formData?.body || '' %></textarea>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-primary pill-btn" type="submit">Update Blog</button>
+                    <a class="btn btn-outline-secondary pill-btn" href="/blog/<%= blog.slug || blog._id %>">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <%- include("./partials/scripts.ejs") %>
+</body>
+</html>

@@ -263,6 +263,12 @@ a {
     margin-bottom: 0;
 }
 
+.blog-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
 .blog-cover-wrap {
     overflow: hidden;
     margin-bottom: 1rem;

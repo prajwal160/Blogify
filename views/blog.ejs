@@ -12,8 +12,31 @@
             <h1 class="blog-title"><%= blog.title %></h1>
             <p class="blog-byline">
                 <%= blog.createdBy?.fullName || "Unknown Author" %> •
-                <%= new Date(blog.createdAt).toLocaleDateString() %>
+                <%= new Date(blog.createdAt).toLocaleDateString() %> •
+                <%= blog.views || 0 %> views •
+                <%= blog.likesCount || 0 %> likes
             </p>
+
+            <% if (locals.user) { %>
+                <div class="blog-actions mt-3">
+                    <form action="/blog/<%= blog.slug || blog._id %>/like" method="post">
+                        <button class="btn btn-sm <%= isLiked ? 'btn-outline-danger' : 'btn-outline-primary' %> pill-btn" type="submit">
+                            <%= isLiked ? 'Unlike' : 'Like' %>
+                        </button>
+                    </form>
+                    <form action="/blog/<%= blog.slug || blog._id %>/bookmark" method="post">
+                        <button class="btn btn-sm <%= isBookmarked ? 'btn-outline-success' : 'btn-outline-secondary' %> pill-btn" type="submit">
+                            <%= isBookmarked ? 'Bookmarked' : 'Bookmark' %>
+                        </button>
+                    </form>
+                    <% if (isOwner) { %>
+                        <a class="btn btn-sm btn-outline-dark pill-btn" href="/blog/<%= blog.slug || blog._id %>/edit">Edit</a>
+                        <form action="/blog/<%= blog.slug || blog._id %>/delete" method="post" onsubmit="return confirm('Delete this blog permanently?')">
+                            <button class="btn btn-sm btn-outline-danger pill-btn" type="submit">Delete</button>
+                        </form>
+                    <% } %>
+                </div>
+            <% } %>
         </section>
 
         <section class="surface-card blog-cover-wrap">
