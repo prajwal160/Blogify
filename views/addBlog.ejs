@@ -2,43 +2,91 @@
 <html lang="en">
 <head>
     <%- include("./partials/head.ejs") %>
-    <title>Add New Blog</title> 
+    <title>Create Blog | Blogify</title>
 </head>
 <body>
     <%- include("./partials/nav.ejs") %>
-    <div class="mx-5" >
-        <form action="/blog" method="post" enctype="multipart/form-data">
-            <div class ="my-3">
-                <label for="coverImage" class="form-label">Cover Image</label>
-                <input 
-                type="file" 
-                class="form-control" 
-                id="coverImage" 
-                name="coverImage" 
-                aria-describedby="coverImage">
-            </div>
-            <div class ="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input 
-                type="text" 
-                class="form-control" 
-                id="title" 
-                name="title" 
-                aria-describedby="title">
-            </div>
-            <div class ="mb-3">
-                <label for="area">Body</label>
-                <textarea 
-                class="form-control"  
-                id="area"
-                name="body"
-                ></textarea>
-            </div>
-            <div class="mb-3">
-                <button class="btn btn-primary">Submit</button>
-            </div>
-        </form>
-    </div>
+
+    <main class="page-wrap create-shell">
+        <section class="surface-card create-card">
+            <h1 class="create-title">Create New Blog</h1>
+            <p class="create-subtitle">Draft now, publish when ready.</p>
+
+            <form action="/blog" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="coverImage" class="form-label">Cover Image</label>
+                    <input
+                        type="file"
+                        class="form-control"
+                        id="coverImage"
+                        name="coverImage"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        value="<%= formData?.title || '' %>"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label for="excerpt" class="form-label">Excerpt</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="excerpt"
+                        name="excerpt"
+                        maxlength="180"
+                        value="<%= formData?.excerpt || '' %>"
+                        placeholder="Short summary (optional)"
+                    >
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-7">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="tags"
+                            name="tags"
+                            value="<%= formData?.tags || '' %>"
+                            placeholder="nodejs, mongodb, career"
+                        >
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="published" <%= (formData?.status || 'published') === 'published' ? 'selected' : '' %>>Published</option>
+                            <option value="draft" <%= formData?.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-3 mb-3">
+                    <label for="body" class="form-label">Body</label>
+                    <textarea
+                        class="form-control create-body"
+                        id="body"
+                        name="body"
+                        required
+                    ><%= formData?.body || '' %></textarea>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-primary pill-btn" type="submit">Save Blog</button>
+                    <a class="btn btn-outline-secondary pill-btn" href="/">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
     <%- include("./partials/scripts.ejs") %>
 </body>
 </html>

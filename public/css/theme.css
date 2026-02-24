@@ -307,3 +307,25 @@ a {
     color: #2a3138;
     white-space: pre-wrap;
 }
+
+.create-shell {
+    padding: 1.4rem 0 2.6rem;
+}
+
+.create-card {
+    padding: 1.5rem;
+}
+
+.create-title {
+    margin-bottom: 0.35rem;
+}
+
+.create-subtitle {
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+}
+
+.create-body {
+    min-height: 280px;
+    resize: vertical;
+}
