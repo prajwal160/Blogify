@@ -1,91 +1,101 @@
-const {Router}= require("express");
+const { Router } = require("express");
 const router = Router();
-const path = require("path")
 
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");  // ✅ Import CloudinaryStorage
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const  Blog= require("../models/blog");
-const  Comment= require("../models/comment");
+const Blog = require("../models/blog");
+const Comment = require("../models/comment");
+const { requireAuth } = require("../middlewares/authentication");
 
-// 🔹 Configure Cloudinary
-cloudinary.config({
-    cloud_name: "dbzzxajv2",  // Replace with your Cloudinary cloud name
-    api_key: "953427381864972",        // Replace with your Cloudinary API key
-    api_secret: "qiLpUxmUGGb7KebUIRbZD6xDflg",  // Replace with your Cloudinary API secret
-});
+const cloudinaryConfig = {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+};
 
-// const storage = multer.diskStorage({  //made for local storage, gave error after deploying aswe are makeing changes to to deployed files on every post call during add blog. so I will use cloudinary,
-//     destination: function (req, file, cb) {
-//         cb(null, path.resolve(`./public/uploads/`));
-//     },
-//     filename: function (req, file, cb) {
-//         const fileName = `${Date.now()}-${file.originalname}`;
-//         cb(null, fileName)
-//     }
-// });
+if (!cloudinaryConfig.cloud_name || !cloudinaryConfig.api_key || !cloudinaryConfig.api_secret) {
+    throw new Error("Missing Cloudinary environment variables.");
+}
+
+cloudinary.config(cloudinaryConfig);
 
 const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
+    cloudinary,
     params: {
-      folder: "blog-uploads", // Cloudinary folder name
-      format: async (req, file) => "jpeg", // Convert to jpeg format
-      public_id: (req, file) => `${Date.now()}-${file.originalname}`, // Unique filename
+        folder: process.env.CLOUDINARY_FOLDER || "blog-uploads",
+        format: async () => "jpeg",
+        public_id: (req, file) => `${Date.now()}-${file.originalname}`,
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-
-router.get("/add-new", (req, res)=>{
-    return res.render("addBlog",{
+router.get("/add-new", requireAuth, (req, res) => {
+    return res.render("addBlog", {
         user: req.user,
     });
 });
 
-router.get("/:id", async (req, res)=>{
+router.get("/:id", async (req, res) => {
     const blog = await Blog.findById(req.params.id).populate("createdBy");
-    const comments = await Comment.find({blogId: req.params.id}).populate(
-        "createdBy"
-    );
-    // console.log("comments", comments);
-    // console.log("blog", blog);
-    return res.render("blog",{
+    const comments = await Comment.find({ blogId: req.params.id }).populate("createdBy");
+
+    return res.render("blog", {
         user: req.user,
         blog,
         comments,
-    })
-})
+    });
+});
 
-router.post("/comment/:blogId",async (req, res)=>{
-    const comment = await Comment.create({
-        content : req.body.content,
+router.post("/comment/:blogId", requireAuth, async (req, res) => {
+    const content = req.body?.content?.trim();
+
+    if (!content) {
+        const blog = await Blog.findById(req.params.blogId).populate("createdBy");
+        const comments = await Comment.find({ blogId: req.params.blogId }).populate("createdBy");
+
+        return res.status(400).render("blog", {
+            user: req.user,
+            blog,
+            comments,
+            error: "Comment cannot be empty.",
+        });
+    }
+
+    await Comment.create({
+        content,
         blogId: req.params.blogId,
         createdBy: req.user._id,
     });
-    // console.log('Comment created:', comment);
+
     return res.redirect(`/blog/${req.params.blogId}`);
 });
 
-
-router.post("/", upload.single("coverImage"),async (req, res)=>{  //coverImage is name of the "input" tag in ejs file
-    // console.log(req.body);
-    // console.log(req.file); //file (multer)
+router.post("/", requireAuth, upload.single("coverImage"), async (req, res) => {
     try {
-        const {title, body} = req.body;
+        const title = req.body?.title?.trim();
+        const body = req.body?.body?.trim();
 
-        const coverImageURL = req.file.path.startsWith("http") 
-        ? req.file.path  // ✅ Use full Cloudinary URL
-        : `/uploads/${req.file.filename}`; // ✅ Keep local images working
-    
+        if (!title || !body) {
+            return res.status(400).render("addBlog", {
+                user: req.user,
+                error: "Title and body are required.",
+            });
+        }
+
+        const coverImageURL = req.file?.path?.startsWith("http")
+            ? req.file.path
+            : (req.file?.filename ? `/uploads/${req.file.filename}` : "/images/default.png");
+
         const blog = await Blog.create({
             body,
             title,
             createdBy: req.user._id,
-            // coverImageURL:  req.file.path.startsWith("http") ? req.file.path : `/uploads/${req.file.filename}`,
-            coverImageURL: coverImageURL,
+            coverImageURL,
         });
+
         return res.redirect(`/blog/${blog._id}`);
     } catch (error) {
         console.error("Error uploading image:", error);
