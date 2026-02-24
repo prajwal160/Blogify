@@ -1,1 +1,37 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    (function () {
+        var root = document.documentElement;
+        var toggle = document.getElementById("themeToggle");
+        var moon = document.getElementById("themeIconMoon");
+        var sun = document.getElementById("themeIconSun");
+
+        function applyTheme(theme) {
+            root.setAttribute("data-theme", theme);
+            if (toggle) {
+                toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+                toggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+            }
+            if (moon && sun) {
+                if (theme === "dark") {
+                    moon.classList.add("d-none");
+                    sun.classList.remove("d-none");
+                } else {
+                    sun.classList.add("d-none");
+                    moon.classList.remove("d-none");
+                }
+            }
+        }
+
+        var currentTheme = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        applyTheme(currentTheme);
+
+        if (toggle) {
+            toggle.addEventListener("click", function () {
+                var nextTheme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                applyTheme(nextTheme);
+                localStorage.setItem("theme", nextTheme);
+            });
+        }
+    })();
+</script>

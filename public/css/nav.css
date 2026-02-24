@@ -84,6 +84,61 @@
     border: 1px solid var(--line);
 }
 
+.theme-toggle-btn {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.7rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: var(--surface);
+    min-width: 42px;
+    text-align: center;
+}
+
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--surface) 80%, var(--brand-soft) 20%);
+}
+
+[data-theme="dark"] .custom-nav-link:hover,
+[data-theme="dark"] .custom-nav-link:focus {
+    background: #24303b;
+    color: #f2f7fb;
+}
+
+[data-theme="dark"] .app-nav {
+    background: rgba(15, 20, 27, 0.94);
+    border-bottom-color: #2b3541;
+}
+
+[data-theme="dark"] .brand-mark {
+    color: #eaf0f7;
+}
+
+[data-theme="dark"] .nav-user {
+    background: #24303b;
+    color: #f2f7fb;
+}
+
+[data-theme="dark"] .nav-user:hover,
+[data-theme="dark"] .nav-user:focus {
+    background: #2a3947;
+}
+
+[data-theme="dark"] .nav-cta {
+    background: #1e6f9f;
+}
+
+[data-theme="dark"] .nav-cta:hover,
+[data-theme="dark"] .nav-cta:focus {
+    background: #195b81;
+}
+
+[data-theme="dark"] .navbar-toggler-icon {
+    filter: invert(1) brightness(1.8);
+}
+
 @media (max-width: 991.98px) {
     .app-nav .navbar-collapse {
         margin-top: 0.9rem;
