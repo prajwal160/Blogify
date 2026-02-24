@@ -1,44 +1,60 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark" data-bs-theme= "dark">
-    <div class="container-fluid">
-        <a class="navbar-brand btn btn-outline-primary" href="/">Blogify</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg app-nav sticky-top">
+    <div class="container-fluid page-wrap">
+        <a class="navbar-brand brand-mark" href="/">Blogify</a>
+        <button
+            class="navbar-toggler nav-toggle"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                 <li class="nav-item">
-                    <a class="nav-link btn btn-outline-primary custom-nav-link" aria-current="page" href="/">Home</a>
+                    <a class="nav-link custom-nav-link" aria-current="page" href="/">Home</a>
                 </li>
                 <% if (locals.user) { %>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-primary custom-nav-link" href="/blog/add-new">Add Blog</a>
+                        <a class="nav-link custom-nav-link" href="/blog/add-new">Add Blog</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle custom-nav-link" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Prajwal Araladinni
+                        <a
+                            class="nav-link dropdown-toggle nav-user"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <%= locals.user.fullName || "User" %>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/user/logout">Logout</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li>
+                                <a class="dropdown-item text-danger" href="/user/logout">Logout</a>
+                            </li>
                         </ul>
                     </li>
-                <% } else{%>
+                <% } else { %>
                     <li class="nav-item">
-                        <a class="nav-link custom-nav-link" aria-current="page" href="/user/signin">Signin</a>
+                        <a class="nav-link custom-nav-link" href="/user/signin">Signin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link  custom-nav-link" aria-current="page" href="/user/signup">Create Account</a>
+                        <a class="nav-link nav-cta" href="/user/signup">Create Account</a>
                     </li>
                 <% } %>
             </ul>
         </div>
     </div>
 </nav>
+
 <% if (locals.error) { %>
-    <div class="mt-4 mx-2 rounded-md">
-        <div class="alert alert-danger" role="alert">
+    <div class="theme-alert">
+        <div class="alert alert-danger mb-0" role="alert">
             <%= locals.error %>
-        </div> 
+        </div>
     </div>
 <% } %>

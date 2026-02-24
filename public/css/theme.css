@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+:root {
+    --bg: #f6f6f0;
+    --surface: #ffffff;
+    --ink: #101418;
+    --muted: #5b626a;
+    --brand: #106ba3;
+    --brand-soft: #d8ecfb;
+    --line: #d9dedf;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --shadow-soft: 0 8px 24px rgba(16, 20, 24, 0.08);
+    --shadow-strong: 0 16px 40px rgba(16, 20, 24, 0.14);
+    --max-width: 1160px;
+}
+
+html,
+body {
+    background: radial-gradient(circle at 15% 15%, #fffef4 0%, var(--bg) 55%, #ecefe9 100%);
+    color: var(--ink);
+    font-family: "Manrope", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "DM Serif Text", serif;
+    letter-spacing: 0.2px;
+}
+
+a {
+    color: inherit;
+}
+
+.page-wrap {
+    width: min(var(--max-width), 92vw);
+    margin: 0 auto;
+}
+
+.surface-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.pill-btn {
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+}
+
+.theme-alert {
+    width: min(var(--max-width), 92vw);
+    margin: 1rem auto;
+}

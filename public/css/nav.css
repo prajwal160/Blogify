@@ -1,26 +1,69 @@
+.app-nav {
+    backdrop-filter: blur(8px);
+    background: rgba(246, 246, 240, 0.9);
+    border-bottom: 1px solid var(--line);
+}
+
+.brand-mark {
+    font-family: "DM Serif Text", serif;
+    font-size: 1.45rem;
+    letter-spacing: 0.4px;
+    color: var(--ink);
+}
+
+.brand-mark:hover {
+    color: var(--brand);
+}
+
 .custom-nav-link {
-    transition: all 0.3s ease-in-out; /* Smooth transition effect */
-    border-radius: 5px; /* Rounded corners */
-    padding: 8px 12px; /* Add some padding */
-    transform-style: preserve-3d; /* Enables 3D transformation effects */
+    border-radius: 999px;
+    font-weight: 700;
+    color: var(--muted);
+    padding: 0.45rem 0.95rem;
+    transition: all 180ms ease-in-out;
 }
 
 .custom-nav-link:hover,
-.custom-nav-link.active {
-     background-color: var(--bs-primary); /* Bootstrap primary color */
-     color: White !important; /* Change text color */
-    /* background-color: rgb(244, 245, 242);  Bootstrap primary color */
-    /* color: rgb(17, 15, 15) !important; Change text color */
-    transform: translateY(-3px) translateZ(5px); /* Slight upward movement and pop out*/
+.custom-nav-link:focus {
+    color: var(--ink);
+    background: #eef2f2;
 }
 
-.custom-card-link {
-    transition: all 0.3s ease-in-out; 
-    transform-style: preserve-3d;
+.nav-user {
+    border-radius: 999px;
+    background: #edf4f9;
+    color: var(--ink);
+    font-weight: 700;
+    padding: 0.45rem 0.95rem;
 }
 
-.custom-card-link:hover,
-.custom-card-link.active {
-    transform: translateY(-3px) translateZ(5px);
-    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.8), -4px -4px 7px rgba(255, 0, 0, 0.5);
-} 
+.nav-user:hover,
+.nav-user:focus {
+    background: #ddebf7;
+}
+
+.nav-cta {
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    background: var(--brand);
+    color: #fff;
+    font-weight: 700;
+}
+
+.nav-cta:hover,
+.nav-cta:focus {
+    background: #0d5986;
+    color: #fff;
+}
+
+.nav-toggle {
+    border: 1px solid var(--line);
+}
+
+@media (max-width: 991.98px) {
+    .app-nav .navbar-collapse {
+        margin-top: 0.9rem;
+        border-top: 1px solid var(--line);
+        padding-top: 0.8rem;
+    }
+}
