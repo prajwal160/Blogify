@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <%- include("./partials/head.ejs") %>
-    <title><%= blog.title %> | Blogify</title>
+    <title><%= locals.pageTitle || (blog.title + " | Blogify") %></title>
 </head>
 <body>
     <%- include("./partials/nav.ejs") %>

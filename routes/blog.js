@@ -95,6 +95,9 @@ router.get("/add-new", requireAuth, (req, res) => {
             status: "published",
             body: "",
         },
+        pageTitle: "Create Blog | Blogify",
+        metaDescription: "Create and publish a new blog post on Blogify.",
+        ogTitle: "Create Blog - Blogify",
     });
 });
 
@@ -115,6 +118,9 @@ router.get("/:identifier/edit", requireAuth, async (req, res) => {
             status: blog.status,
             body: blog.body,
         },
+        pageTitle: `Edit ${blog.title} | Blogify`,
+        metaDescription: `Edit your blog post: ${blog.title}`,
+        ogTitle: `Edit ${blog.title}`,
     });
 });
 
@@ -143,6 +149,9 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
                 status,
                 body,
             },
+            pageTitle: `Edit ${blog.title} | Blogify`,
+            metaDescription: `Edit your blog post: ${blog.title}`,
+            ogTitle: `Edit ${blog.title}`,
         });
     }
 
@@ -158,6 +167,9 @@ router.post("/:identifier/edit", requireAuth, upload.single("coverImage"), async
                 status: "published",
                 body,
             },
+            pageTitle: `Edit ${blog.title} | Blogify`,
+            metaDescription: `Edit your blog post: ${blog.title}`,
+            ogTitle: `Edit ${blog.title}`,
         });
     }
 
@@ -304,6 +316,10 @@ router.get("/:identifier", async (req, res) => {
         isOwner: owner,
         isLiked: liked,
         isBookmarked: bookmarked,
+        pageTitle: `${blog.title} | Blogify`,
+        metaDescription: blog.excerpt || blog.title,
+        ogTitle: blog.title,
+        ogImage: blog.coverImageURL || "/images/default.png",
     });
 });
 
@@ -323,6 +339,10 @@ router.post("/comment/:blogId", requireAuth, async (req, res) => {
             isLiked: false,
             isBookmarked: false,
             error: "Comment cannot be empty.",
+            pageTitle: `${blog.title} | Blogify`,
+            metaDescription: blog.excerpt || blog.title,
+            ogTitle: blog.title,
+            ogImage: blog.coverImageURL || "/images/default.png",
         });
     }
 
@@ -355,6 +375,9 @@ router.post("/", requireAuth, upload.single("coverImage"), async (req, res) => {
                     status,
                     body,
                 },
+                pageTitle: "Create Blog | Blogify",
+                metaDescription: "Create and publish a new blog post on Blogify.",
+                ogTitle: "Create Blog - Blogify",
             });
         }
 
@@ -369,6 +392,9 @@ router.post("/", requireAuth, upload.single("coverImage"), async (req, res) => {
                     status: "published",
                     body,
                 },
+                pageTitle: "Create Blog | Blogify",
+                metaDescription: "Create and publish a new blog post on Blogify.",
+                ogTitle: "Create Blog - Blogify",
             });
         }
 

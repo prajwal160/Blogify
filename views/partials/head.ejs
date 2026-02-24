@@ -5,6 +5,11 @@ crossorigin="anonymous"
 />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="<%= locals.metaDescription || 'Blogify is a platform for writing and reading blogs.' %>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="<%= locals.ogTitle || locals.pageTitle || 'Blogify' %>">
+<meta property="og:description" content="<%= locals.metaDescription || 'Blogify is a platform for writing and reading blogs.' %>">
+<meta property="og:image" content="<%= locals.ogImage || '/images/default.png' %>">
 <link rel="stylesheet" href="/css/theme.css">
 <link rel="stylesheet" href="/css/nav.css">
 <link rel="icon" type="image/png" href="/images/favicon.png">
